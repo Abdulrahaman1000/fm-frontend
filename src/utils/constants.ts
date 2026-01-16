@@ -4,7 +4,12 @@
 
 export const APP_NAME = import.meta.env.VITE_APP_NAME || 'Radio Station Invoicing System';
 export const STATION_NAME = import.meta.env.VITE_STATION_NAME || 'Emirate FM 98.5 FM';
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// Log API URL for debugging (will show in browser console)
+console.log('🔧 Environment Mode:', import.meta.env.MODE);
+console.log('🌐 API Base URL:', API_BASE_URL);
+console.log('📦 All Environment Variables:', import.meta.env);
 
 // Local storage keys
 export const STORAGE_KEYS = {
