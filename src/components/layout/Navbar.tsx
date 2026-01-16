@@ -2,7 +2,7 @@
 // Navbar Component - COMPLETE
 // ============================================
 
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import { Menu, Bell } from 'lucide-react';
 
 interface NavbarProps {

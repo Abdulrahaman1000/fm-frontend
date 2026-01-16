@@ -2,7 +2,7 @@
 // Dashboard Page - COMPLETE
 // ============================================
 
-import React, { useEffect } from 'react';
+// import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   DollarSign,
@@ -19,9 +19,11 @@ import ErrorMessage from '../components/common/ErrorMessage';
 import Button from '../components/common/Button';
 import StatsCard from '../components/dashboard/StatsCard';
 import { formatCurrency } from '../utils/formatters';
-import StatusBreakdown from '../components/dashboard/StatusBreakdown';
+// import StatusBreakdown from '../components/dashboard/StatusBreakdown';
 import RecentInvoices from '../components/dashboard/RecentInvoices';
 import RecentPayments from '../components/dashboard/RecentPayments';
+import StatusBreakdownCard from '../components/dashboard/StatusBreakdownCard';
+
 // import Header from '@/components/layout/Header';
 // import StatsCard from '@/components/dashboard/StatsCard';
 // import RecentInvoices from '@/components/dashboard/RecentInvoices';
@@ -128,7 +130,7 @@ const DashboardPage: React.FC = () => {
 
           {/* Status Breakdown - Takes 1 column */}
           <div>
-            <StatusBreakdown
+            <StatusBreakdownCard
               breakdown={stats?.status_breakdown || []}
               isLoading={loading}
             />

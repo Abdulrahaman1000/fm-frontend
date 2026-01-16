@@ -1,19 +1,14 @@
-// ============================================
-// Invoice Status Breakdown Component
-// ============================================
-
 import React from 'react';
 import { PieChart } from 'lucide-react';
 import { formatCurrency, formatStatus } from '../../utils/formatters';
-// import { StatusBreakdown as StatusBreakdownType } from '@/types';
-// import { formatCurrency, formatStatus } from '@/utils/formatters';
+import type { StatusBreakdown } from '../../types';
 
 interface StatusBreakdownProps {
-  breakdown: StatusBreakdownType[];
+  breakdown: StatusBreakdown[];
   isLoading?: boolean;
 }
 
-const StatusBreakdown: React.FC<StatusBreakdownProps> = ({ breakdown, isLoading }) => {
+const StatusBreakdownCard: React.FC<StatusBreakdownProps> = ({ breakdown, isLoading }) => {
   if (isLoading) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6 animate-pulse">
@@ -50,7 +45,8 @@ const StatusBreakdown: React.FC<StatusBreakdownProps> = ({ breakdown, isLoading 
         ) : (
           <div className="space-y-4">
             {breakdown.map((item) => {
-              const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
+              const percentage =
+                total > 0 ? ((item.count / total) * 100).toFixed(1) : '0';
 
               return (
                 <div key={item._id}>
@@ -75,7 +71,6 @@ const StatusBreakdown: React.FC<StatusBreakdownProps> = ({ breakdown, isLoading 
                     </div>
                   </div>
 
-                  {/* Progress Bar */}
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
                       className={`h-2 rounded-full ${
@@ -98,4 +93,4 @@ const StatusBreakdown: React.FC<StatusBreakdownProps> = ({ breakdown, isLoading 
   );
 };
 
-export default StatusBreakdown;
+export default StatusBreakdownCard;

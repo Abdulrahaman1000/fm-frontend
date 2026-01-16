@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Eye } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import type { Invoice } from '../../types';
 import { STATUS_COLORS } from '../../utils/constants';
 import { cn } from '../../utils/helpers';

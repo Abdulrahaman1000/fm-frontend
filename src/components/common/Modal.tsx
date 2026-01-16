@@ -2,7 +2,7 @@
 // Modal Component
 // ============================================
 
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '../../utils/helpers';
 // import { cn } from '@/utils/helpers';

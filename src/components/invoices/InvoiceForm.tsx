@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import type { Client, CreateInvoiceData, ServiceLine } from '../../types';
 import { formatCurrency, formatDateForAPI } from '../../utils/formatters';

@@ -20,9 +20,7 @@ interface RateCardProps {
 }
 
 const RateCard: React.FC<RateCardProps> = ({ rate, onEdit, onDelete }) => {
-  const getRateId = (rate: Rate): string => {
-    return (rate as any)._id || rate.id;
-  };
+  
 
   // Category colors
   const categoryColors: Record<string, string> = {

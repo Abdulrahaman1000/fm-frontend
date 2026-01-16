@@ -37,10 +37,6 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
     return 'Unknown Client';
   };
 
-  const getInvoiceId = (invoice: Invoice): string => {
-    return (invoice as any)._id || invoice.id;
-  };
-
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow">
       {/* Header */}

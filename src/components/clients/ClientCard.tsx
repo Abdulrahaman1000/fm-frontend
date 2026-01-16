@@ -22,7 +22,6 @@ const ClientCard: React.FC<ClientCardProps> = ({
   client,
   onEdit,
   onDelete,
-  onClick,
 }) => {
   // Get the correct ID (handle both _id and id)
   const clientId = (client as any)._id || client.id;

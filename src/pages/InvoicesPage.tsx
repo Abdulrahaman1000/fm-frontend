@@ -300,7 +300,7 @@ const InvoicesPage: React.FC = () => {
         ) : (
           <InvoiceForm
             clients={clients || []}
-            invoice={invoiceToEdit}
+            // invoice={invoiceToEdit}
             onSubmit={handleEdit}
             onCancel={() => {
               editModal.close();
