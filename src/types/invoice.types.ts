@@ -1,10 +1,8 @@
 // ============================================
-// Invoice/Proforma Types
+// Invoice/Proforma Types with VAT
 // ============================================
 
 import type { Client } from "./client.types";
-
-// import { Client } from './client.types';
 
 export interface ServiceLine {
   description: string;
@@ -24,6 +22,10 @@ export interface Invoice {
   invoice_date: Date;
   services: ServiceLine[];
   total_slots: number;
+  // NEW VAT FIELDS
+  subtotal: number;
+  vat_rate: number;
+  vat_amount: number;
   total_amount: number;
   amount_in_words?: string;
   advance_required: number;
@@ -41,6 +43,7 @@ export interface CreateInvoiceData {
   invoice_type: 'proforma' | 'advance_bill';
   invoice_date: string;
   services: ServiceLine[];
+  vat_rate?: number; // NEW: Optional VAT rate (defaults to 7.5% on backend)
   advance_required?: number;
   payment_terms?: string;
   notes?: string;
@@ -51,6 +54,7 @@ export interface UpdateInvoiceData {
   invoice_type?: 'proforma' | 'advance_bill';
   invoice_date?: string;
   services?: ServiceLine[];
+  vat_rate?: number; // NEW: Optional VAT rate
   advance_required?: number;
   payment_terms?: string;
   notes?: string;

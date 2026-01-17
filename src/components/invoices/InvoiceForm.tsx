@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import type { Client, CreateInvoiceData, ServiceLine } from '../../types';
@@ -6,7 +5,6 @@ import { formatCurrency, formatDateForAPI } from '../../utils/formatters';
 import Input from '../common/Input';
 import Button from '../common/Button';
 import ServiceLineItem from './ServiceLineItem';
-
 
 interface InvoiceFormProps {
   clients: Client[];
@@ -34,6 +32,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         rate_per_slot: 0,
       },
     ],
+    vat_rate: 7.5, // NEW: Default VAT rate
     payment_terms: 'This bill is issued in advance and payment must be made before commencement of broadcast.',
     notes: '',
   });
@@ -45,22 +44,25 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     return (client as any)._id || client.id;
   };
 
-  // Calculate totals
+  // Calculate totals with VAT
   const calculateTotals = () => {
     let totalSlots = 0;
-    let totalAmount = 0;
+    let subtotal = 0;
 
     formData.services.forEach((service) => {
       const slots = service.daily_slots * service.campaign_days;
       const amount = slots * service.rate_per_slot;
       totalSlots += slots;
-      totalAmount += amount;
+      subtotal += amount;
     });
 
-    return { totalSlots, totalAmount };
+    const vatAmount = Math.round((subtotal * (formData.vat_rate || 0)) / 100);
+    const totalAmount = subtotal + vatAmount;
+
+    return { totalSlots, subtotal, vatAmount, totalAmount };
   };
 
-  const { totalSlots, totalAmount } = calculateTotals();
+  const { totalSlots, subtotal, vatAmount, totalAmount } = calculateTotals();
 
   // Handle service change
   const handleServiceChange = (index: number, field: keyof ServiceLine, value: any) => {
@@ -126,6 +128,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       }
     });
 
+    if (formData.vat_rate !== undefined && (formData.vat_rate < 0 || formData.vat_rate > 100)) {
+      newErrors.vat_rate = 'VAT rate must be between 0 and 100';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -137,13 +143,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       return;
     }
 
-    // Log the data being sent for debugging
     console.log('Submitting invoice data:', formData);
 
     try {
       await onSubmit(formData);
     } catch (error) {
-      // Error handling in parent
       console.error('Submit error:', error);
     }
   };
@@ -161,7 +165,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             const selectedId = e.target.value;
             console.log('Selected client ID:', selectedId);
             setFormData((prev) => ({ ...prev, client_id: selectedId }));
-            // Clear error
             if (errors.client_id) {
               const newErrors = { ...errors };
               delete newErrors.client_id;
@@ -200,8 +203,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             disabled={isLoading}
             className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
           >
-            <option value="proforma">Proforma Invoice</option>
-            <option value="advance_bill">Advance Bill</option>
+            <option value="proforma">Invoice</option>
           </select>
         </div>
 
@@ -213,6 +215,33 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           required
           disabled={isLoading}
         />
+      </div>
+
+      {/* VAT Rate - NEW */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          VAT Rate (%)
+        </label>
+        <input
+          type="number"
+          value={formData.vat_rate}
+          onChange={(e) => {
+            const value = parseFloat(e.target.value);
+            setFormData((prev) => ({ ...prev, vat_rate: isNaN(value) ? 0 : value }));
+            if (errors.vat_rate) {
+              const newErrors = { ...errors };
+              delete newErrors.vat_rate;
+              setErrors(newErrors);
+            }
+          }}
+          min="0"
+          max="100"
+          step="0.1"
+          disabled={isLoading}
+          className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+        />
+        {errors.vat_rate && <p className="mt-1 text-sm text-red-600">{errors.vat_rate}</p>}
+        <p className="mt-1 text-xs text-gray-500">Default is 7.5%. Adjust if needed.</p>
       </div>
 
       {/* Services */}
@@ -277,14 +306,22 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         />
       </div>
 
-      {/* Totals Summary */}
+      {/* Totals Summary with VAT - UPDATED */}
       <div className="bg-blue-50 rounded-lg p-4 border-2 border-blue-200">
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-700 font-medium">Total Slots:</span>
           <span className="text-xl font-bold text-gray-900">{totalSlots}</span>
         </div>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-gray-700 font-medium">Subtotal:</span>
+          <span className="text-lg font-bold text-gray-900">{formatCurrency(subtotal)}</span>
+        </div>
+        <div className="flex justify-between items-center mb-2 pb-2 border-b border-blue-300">
+          <span className="text-gray-700 font-medium">VAT ({formData.vat_rate}%):</span>
+          <span className="text-lg font-bold text-gray-900">{formatCurrency(vatAmount)}</span>
+        </div>
         <div className="flex justify-between items-center">
-          <span className="text-gray-700 font-medium">Total Amount:</span>
+          <span className="text-gray-700 font-bold">Total Amount Payable:</span>
           <span className="text-2xl font-bold text-blue-600">{formatCurrency(totalAmount)}</span>
         </div>
       </div>

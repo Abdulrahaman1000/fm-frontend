@@ -1,5 +1,5 @@
 // ============================================
-// Invoice Details Component (View Modal)
+// Invoice Details Component with VAT Display
 // ============================================
 
 import React from 'react';
@@ -7,10 +7,6 @@ import type { Invoice } from '../../types';
 import { formatCurrency, formatDate } from '../../utils/formatters';
 import { STATUS_COLORS } from '../../utils/constants';
 import { cn } from '../../utils/helpers';
-// import { Invoice } from '@/types';
-// import { formatCurrency, formatDate } from '@/utils/formatters';
-// import { STATUS_COLORS } from '@/utils/constants';
-// import { cn } from '@/utils/helpers';
 
 interface InvoiceDetailsProps {
   invoice: Invoice;
@@ -128,18 +124,37 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({ invoice }) => {
         </div>
       </div>
 
-      {/* Totals */}
+      {/* Totals with VAT - UPDATED */}
       <div className="bg-blue-50 rounded-lg p-4 space-y-2">
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-700">Total Slots:</span>
           <span className="font-semibold text-gray-900">{invoice.total_slots}</span>
         </div>
+        
+        {/* Subtotal */}
         <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-700">Total Amount:</span>
-          <span className="text-xl font-bold text-gray-900">
+          <span className="text-sm text-gray-700">Subtotal:</span>
+          <span className="font-semibold text-gray-900">
+            {formatCurrency(invoice.subtotal)}
+          </span>
+        </div>
+
+        {/* VAT */}
+        <div className="flex justify-between items-center pb-2 border-b border-blue-200">
+          <span className="text-sm text-gray-700">VAT ({invoice.vat_rate}%):</span>
+          <span className="font-semibold text-gray-900">
+            {formatCurrency(invoice.vat_amount)}
+          </span>
+        </div>
+
+        {/* Total Amount Payable */}
+        <div className="flex justify-between items-center pt-2">
+          <span className="text-base font-bold text-gray-900">Total Amount Payable:</span>
+          <span className="text-2xl font-bold text-blue-600">
             {formatCurrency(invoice.total_amount)}
           </span>
         </div>
+
         {invoice.amount_in_words && (
           <p className="text-xs text-gray-600 italic pt-2 border-t border-blue-200">
             Amount in Words: {invoice.amount_in_words}
